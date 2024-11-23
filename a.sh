@@ -1,10 +1,14 @@
 #!/bin/bash
 #links
-export xml=https://tmpfiles.org/dl/16141612/roomservice.xml
-export errorfix1=https://tmpfiles.org/dl/16141493/android.bp.txt
+export xml=https://tmpfiles.org/dl/16212780/roomservice.xml
+export errorfix1=https://tmpfiles.org/dl/16212783/android.bp.txt
 #tmpfs
 mkdir /crdroid
-mount -t tmpfs -o size=320G tmpfs /crdroid 
+mount /dev/sdc1 /crdroid
+fallocate -l 48G /tmp/swap.img
+chmod 0600 /tmp/swap.img
+mkswap /tmp/swap.img
+swapon /tmp/swap.img
 #requirements
 apt update && apt upgrade -y
 apt install git git-lfs curl wget python-is-python3 sudo nano nload -y
@@ -25,7 +29,7 @@ curl $xml -o .repo/local_manifests/roomservice.xml
 rm -fr /crdroid/kernel/xiaomi/Tiare/techpack/camera-legacy
 rm -fr /crdroid/kernel/xiaomi/Tiare/techpack/audio-legacy
 rm -fr /crdroid/kernel/xiaomi/Tiare/techpack/camera-legacy-m
-repo sync -j16
+repo sync -j8
 #error fixing
 mkdir /crdroid/kernel/xiaomi/mithorium-4.19
 ln -sf /crdroid/kernel/xiaomi/Tiare /crdroid/kernel/xiaomi/mithorium-4.19/kernel
@@ -38,4 +42,4 @@ export USE_CCACHE=1
 . build/envsetup.sh
 brunch Tiare_4_19
 make clean
-make -j16
+make -j8
